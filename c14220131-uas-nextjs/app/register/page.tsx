@@ -11,9 +11,6 @@ export default function RegisterPage() {
     email: '',
     password: '',
     confirmPassword: '',
-    nama: '',
-    alamat: '',
-    no_ktp: '',
   })
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
@@ -37,13 +34,7 @@ export default function RegisterPage() {
       return
     }
 
-    // Validasi KTP
-    if (formData.no_ktp.length !== 16) {
-      setError('Nomor KTP harus 16 digit')
-      setLoading(false)
-      return
-    }
-
+   
     try {
       const supabase = createClient()
 
@@ -56,18 +47,8 @@ export default function RegisterPage() {
       if (authError) throw authError
       if (!authData.user) throw new Error('Gagal membuat user')
 
-      // 2. Simpan profile ke database
-      const { error: profileError } = await supabase
-        .from('profiles')
-        .insert({
-          user_id: authData.user.id,
-          nama: formData.nama,
-          alamat: formData.alamat,
-          no_ktp: formData.no_ktp,
-          foto_url: null,
-        })
+     
 
-      if (profileError) throw profileError
 
       // Redirect ke login
       alert('Registrasi berhasil! Silakan login.')
@@ -137,49 +118,6 @@ export default function RegisterPage() {
                 minLength={6}
               />
             </div>
-
-            <div>
-              <label className="label">Nama Lengkap</label>
-              <input
-                type="text"
-                name="nama"
-                className="input"
-                placeholder="Nama lengkap Anda"
-                value={formData.nama}
-                onChange={handleChange}
-                required
-              />
-            </div>
-
-            <div>
-              <label className="label">Alamat</label>
-              <textarea
-                name="alamat"
-                className="input"
-                placeholder="Alamat lengkap"
-                rows={3}
-                value={formData.alamat}
-                onChange={handleChange}
-                required
-              />
-            </div>
-
-            <div>
-              <label className="label">Nomor KTP</label>
-              <input
-                type="text"
-                name="no_ktp"
-                className="input"
-                placeholder="16 digit nomor KTP"
-                value={formData.no_ktp}
-                onChange={handleChange}
-                required
-                pattern="[0-9]{16}"
-                maxLength={16}
-              />
-              <p className="mt-1 text-xs text-gray-500">Masukkan 16 digit angka</p>
-            </div>
-
             <button
               type="submit"
               className="btn-primary w-full"

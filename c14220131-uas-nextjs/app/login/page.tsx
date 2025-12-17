@@ -43,9 +43,9 @@ export default function LoginPage() {
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-gray-900 mb-2">
-            Selamat Datang
+            Selamat Datang di Aplikasi Portal Karyawan Sederhana
           </h1>
-          <p className="text-gray-600">Login ke akun Anda</p>
+          <p className="text-gray-600">Login ke Akun Anda</p>
         </div>
 
         <div className="card">
