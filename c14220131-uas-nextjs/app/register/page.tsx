@@ -1,62 +1,29 @@
 'use client'
 
 import { useState } from 'react'
-import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { createClient } from '@/lib/supabase'
+import { registerUser } from './actions'
 
 export default function RegisterPage() {
-  const router = useRouter()
-  const [formData, setFormData] = useState({
-    email: '',
-    password: '',
-    confirmPassword: '',
-  })
-  const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+  const [loading, setLoading] = useState(false)
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    })
-  }
-
-  const handleRegister = async (e: React.FormEvent) => {
-    e.preventDefault()
+  const handleSubmit = async (formData: FormData) => {
     setLoading(true)
     setError('')
 
-    // Validasi password
-    if (formData.password !== formData.confirmPassword) {
-      setError('Password tidak cocok')
-      setLoading(false)
-      return
-    }
-
-   
     try {
-      const supabase = createClient()
-
-      // 1. Registrasi user di Supabase Auth
-      const { data: authData, error: authError } = await supabase.auth.signUp({
-        email: formData.email,
-        password: formData.password,
-      })
-
-      if (authError) throw authError
-      if (!authData.user) throw new Error('Gagal membuat user')
-
-     
-
-
-      // Redirect ke login
-      alert('Registrasi berhasil! Silakan login.')
-      router.push('/login')
-    } catch (err: any) {
-      setError(err.message || 'Registrasi gagal')
-    } finally {
-      setLoading(false)
+      const result = await registerUser(formData)
+      
+      // Jika ada result (error), tampilkan
+      if (result?.error) {
+        setError(result.error)
+        setLoading(false)
+      }
+      // Jika tidak ada result, berarti redirect berhasil
+    } catch (error) {
+      // Biarkan redirect error bubble up (ini normal behavior Next.js)
+      throw error
     }
   }
 
@@ -77,7 +44,7 @@ export default function RegisterPage() {
             </div>
           )}
 
-          <form onSubmit={handleRegister} className="space-y-4">
+          <form action={handleSubmit} className="space-y-4">
             <div>
               <label className="label">Email</label>
               <input
@@ -85,8 +52,6 @@ export default function RegisterPage() {
                 name="email"
                 className="input"
                 placeholder="nama@email.com"
-                value={formData.email}
-                onChange={handleChange}
                 required
               />
             </div>
@@ -98,8 +63,6 @@ export default function RegisterPage() {
                 name="password"
                 className="input"
                 placeholder="Minimal 6 karakter"
-                value={formData.password}
-                onChange={handleChange}
                 required
                 minLength={6}
               />
@@ -112,8 +75,6 @@ export default function RegisterPage() {
                 name="confirmPassword"
                 className="input"
                 placeholder="Ulangi password"
-                value={formData.confirmPassword}
-                onChange={handleChange}
                 required
                 minLength={6}
               />

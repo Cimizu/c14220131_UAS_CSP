@@ -7,25 +7,22 @@ export function createClient() {
   )
 }
 
-// Database Types
-export interface UserProfile {
+
+
+export interface Announcement {
   id: string
-  user_id: string
-  nama: string
-  alamat: string
-  no_ktp: string
-  foto_url: string | null
+  title: string
+  content: string
   created_at: string
-  updated_at: string
 }
 
 export interface Database {
   public: {
     Tables: {
-      profiles: {
-        Row: UserProfile
-        Insert: Omit<UserProfile, 'id' | 'created_at' | 'updated_at'>
-        Update: Partial<Omit<UserProfile, 'id' | 'user_id' | 'created_at' | 'updated_at'>>
+      announcements: {
+        Row: Announcement
+        Insert: Omit<Announcement, 'id' | 'created_at'>
+        Update: Partial<Omit<Announcement, 'id' | 'created_at'>>
       }
     }
   }
