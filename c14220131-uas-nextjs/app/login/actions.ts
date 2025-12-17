@@ -1,12 +1,15 @@
 'use server'
 
-import { createClient } from '@/lib/supabase'
 import { redirect } from 'next/navigation'
+import { createClient } from '@/utils/supabase/server'
 
-export async function loginUser(email: string, password: string) {
-  const supabase = createClient()
+export async function loginAction(formData: FormData) {
+  const email = formData.get('email') as string
+  const password = formData.get('password') as string
 
-  const { data, error } = await supabase.auth.signInWithPassword({
+  const supabase = await createClient()
+
+  const { error } = await supabase.auth.signInWithPassword({
     email,
     password,
   })
@@ -15,10 +18,5 @@ export async function loginUser(email: string, password: string) {
     return { error: error.message }
   }
 
-  if (!data.user) {
-    return { error: 'Login gagal' }
-  }
-
-  // Redirect to dashboard after successful login
   redirect('/dashboard')
 }
