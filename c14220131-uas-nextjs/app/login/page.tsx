@@ -6,7 +6,6 @@ export default async function LoginPage() {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
 
-  // Jika sudah login, redirect ke dashboard
   if (user) {
     redirect('/dashboard')
   }

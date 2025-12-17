@@ -12,22 +12,19 @@ type Announcement = {
 export default async function DashboardPage() {
   const supabase = await createClient()
 
-  // Get user
   const { data: { user }, error: userError } = await supabase.auth.getUser()
 
   if (userError || !user) {
     redirect('/login')
   }
 
-  // Fetch announcements
   const { data: announcements, error: announcementsError } = await supabase
-    .from('announcements')
+    .from('announcement')
     .select('*')
     .order('created_at', { ascending: false })
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
-      {/* Header */}
       <header className="bg-white shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex justify-between items-center">
@@ -44,9 +41,7 @@ export default async function DashboardPage() {
         </div>
       </header>
 
-      {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* User Info Card */}
         <div className="bg-white rounded-lg shadow-md p-6 mb-8">
           <h2 className="text-xl font-semibold text-gray-900 mb-4">
             Profile Information
@@ -69,7 +64,6 @@ export default async function DashboardPage() {
           </div>
         </div>
 
-        {/* Announcements */}
         <div>
           <h2 className="text-2xl font-bold text-gray-900 mb-4">
             Announcements
